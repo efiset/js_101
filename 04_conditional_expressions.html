@@ -1,0 +1,27 @@
+<html>
+	<head>
+		<title>Conditional Expressions</title>
+	</head>
+	<body>
+		<div id="output" style="white-space:pre;"></div>
+		<script type="text/javascript">
+			function print(str){
+				var out = document.getElementById('output');
+				var text = out.textContent;
+				text += str;
+				out.textContent = text;
+			};
+
+			// number
+			var a = 5;
+			var b = 3;
+			
+			if( a > b ){
+				print(''+a+' is greater than '+b+'\n');
+			} else {
+				print(''+a+' is less than '+b+'\n');
+			};
+			
+		</script>
+	</body>
+</html>
