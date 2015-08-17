@@ -1,0 +1,31 @@
+<html>
+	<head>
+		<title>Assignments</title>
+	</head>
+	<body>
+		<div id="output" style="white-space:pre;"></div>
+		<script type="text/javascript">
+			function print(str){
+				var out = document.getElementById('output');
+				var text = out.textContent;
+				text += str;
+				out.textContent = text;
+			};
+
+			// string
+			var a = 'a string';
+			print(a);
+			print('\n');
+
+			// number
+			var b = 5;
+			print(b);
+			print('\n');
+
+			// boolean
+			var c = true;
+			print(c);
+			print('\n');
+		</script>
+	</body>
+</html>

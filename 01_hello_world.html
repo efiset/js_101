@@ -1,0 +1,21 @@
+<html>
+	<head>
+		<title>Hello World</title>
+	</head>
+	<body>
+		<div id="output" style="white-space:pre;"></div>
+		<script type="text/javascript">
+			function print(str){
+				var out = document.getElementById('output');
+				var text = out.textContent;
+				text += str;
+				out.textContent = text;
+			};
+			
+			print('Hello World!');
+			print('Hello World!');
+			print('\n');
+			print('Hello World!');
+		</script>
+	</body>
+</html>
