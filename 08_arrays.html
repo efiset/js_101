@@ -1,0 +1,50 @@
+<html>
+	<head>
+		<title>Arrays</title>
+	</head>
+	<body>
+		<div id="output" style="white-space:pre;"></div>
+		<script type="text/javascript">
+			function print(str){
+				var out = document.getElementById('output');
+				var text = out.textContent;
+				text += str;
+				out.textContent = text;
+			};
+
+			function printArray(arr){
+				for(var i=0; i<arr.length; i=i+1){
+					print('' + i + ': ' + arr[i]+'\n');
+				};
+			};
+
+			(function(){
+
+			var a = ['apple','orange'];
+
+			print('Length is ' + a.length+'\n');
+
+			print(a[0]+'\n');
+			print(a[1]+'\n');
+			print(a[2]+'\n');
+
+			a[2] = 'watermelon';
+
+			for(var i=0; i<a.length; i=i+1){
+				print('' + i + ': ' + a[i]+'\n');
+			};
+
+			a[a.length] = 'lemon';
+			printArray(a);
+
+			a.push('guava');
+			printArray(a);
+			a.sort();
+			printArray(a);
+			a.reverse();
+			printArray(a);
+
+			})();
+		</script>
+	</body>
+</html>

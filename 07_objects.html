@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<title>Objects</title>
+	</head>
+	<body>
+		<div id="output" style="white-space:pre;"></div>
+		<script type="text/javascript">
+			function print(str){
+				var out = document.getElementById('output');
+				var text = out.textContent;
+				text += str;
+				out.textContent = text;
+			};
+
+			(function(){
+
+			var a = {
+				name: 'bayley',
+				gender: 'female'
+			};
+			a.age = 2;
+			print(a.name + ' ' + a.gender + ' ' + a.age + '\n');
+
+			var b = 'gender';
+			print(a['name'] + ' ' + a[b]+ ' ' + a.age + '\n');
+
+			})();
+		</script>
+	</body>
+</html>

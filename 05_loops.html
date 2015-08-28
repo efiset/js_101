@@ -1,0 +1,25 @@
+<html>
+	<head>
+		<title>Loops</title>
+	</head>
+	<body>
+		<div id="output" style="white-space:pre;"></div>
+		<script type="text/javascript">
+			function print(str){
+				var out = document.getElementById('output');
+				var text = out.textContent;
+				text += str;
+				out.textContent = text;
+			};
+
+			// number
+			var a = 0;
+			while (a <= 5){
+				print(a + '\n');
+				a = a+1;}			
+
+			for  (a = 10; a <= 20; a = a+2) {
+							print(a+'\n');}
+		</script>
+	</body>
+</html>
