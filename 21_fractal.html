@@ -1,6 +1,6 @@
 <html>
 	<head>
-		<title>Canvas</title>
+		<title>Fractal</title>
 		
 		<style type="text/css">
 			.canvas {
@@ -28,6 +28,7 @@
 		var minY = -2;
 		var maxY = 2;
 		var divergeMaxCount = 100;
+		var zoomFactor = 3;
 		
 		/*
 			In this program, we need to perform computations on
@@ -134,10 +135,10 @@
 			var incX = (maxX - minX) / canvasWidth;
 			var incY = (maxY - minY) / canvasHeight;
 			
-			var effY = minY;
-			for(var y=0; y<canvasHeight; ++y){
+			var effY = maxY;
+			for(var pixelY=0; pixelY<canvasHeight; ++pixelY){
 				var effX = minX;
-				for(var x=0; x<canvasWidth; ++x){
+				for(var pixelX=0; pixelX<canvasWidth; ++pixelX){
 					// Here, choose a function
 					var i = mandelbrot([effX,effY]);
 					//var i = julia([effX,effY]);
@@ -146,16 +147,51 @@
 					//ctx.fillStyle = getColour(i);
 					ctx.fillStyle = getColour2(i);
 					
-					ctx.fillRect( x, y, 1, 1 );
+					ctx.fillRect( pixelX, pixelY, 1, 1 );
 					
-					effX += incX;
+					effX = effX + incX;
 				};
 				
-				effY += incY;
+				effY = effY - incY;
 			};
+		};
+		
+		/*
+			The following functions zooms in at the coordinate.
+			It does this by readjusting the xMin, xMax, yMin and
+			yMax, and redrawing.
+		 */
+		function zoomAt(x,y,factor){
+			if( !factor ) {
+				factor = 2;
+			};
+			
+			// Current distance between edge and center
+		    var dX = (maxX - minX) / 2;
+		    var dY = (maxY - minY) / 2;
+		    
+		    // Apply factor to distance of center to edge
+		    dX = dX / factor;
+		    dY = dY / factor;
+		    
+		    // Set new values for minX, maxX, minY and maxY
+		    minX = x - dX;
+		    maxX = x + dX;
+		    minY = y - dY;
+		    maxY = y + dY;
+		    
+		    // Redraw
+		    drawFractal();
 		};
 			
 		$(document).ready(function(){
+			// Create a canvas element and add it to the page.
+			// The canvas size is <canvasWidth> pixels wide
+			// and <canvasHeight> pixels high.
+			// The pixels have coordinates that range from
+			// (0,0) to (canvasWidth-1,canvasHeight-1).
+			// The pixel with coordinate (0,0) is at the top
+			// left of the canvas.
 			var $canvas = $('<canvas>')
 				.attr('id','canvas')
 				.addClass('canvas')
@@ -164,30 +200,31 @@
 				.appendTo($('body'))
 				;
 			
+			// When clicking on the canvas, zoom at the
+			// position where it was clicked.
 			$canvas.click(function(evt){
+				// Retrieve from the click event the position
+				// of the pixel clicked
 				var rect = canvas.getBoundingClientRect();
-			    var pos = {
-			        x: evt.clientX - rect.left,
-			        y: evt.clientY - rect.top
-			    };
-			    
+			    var pixelX = evt.clientX - rect.left;
+			    var pixelY = evt.clientY - rect.top;
+
+			    // Convert from pixel coordinate to domain
+			    // coordinate. This is done by figuring
+			    // how wide and how high each pixel is
+			    // and then figuring it out from the pixel
+			    // position
 			    var incX = (maxX - minX) / canvasWidth;
 			    var incY = (maxY - minY) / canvasHeight;
 			    
-			    var x = (pos.x * incX) + minX;
-			    var y = (pos.y * incY) + minY;
+			    var x = (pixelX * incX) + minX; // pixel 0 is at left
+			    var y = maxY - (pixelY * incY); // pixel 0 is at top
 
-			    var dX = (maxX - minX) / 4;
-			    var dY = (maxY - minY) / 4;
-			    
-			    minX = x - dX;
-			    maxX = x + dX;
-			    minY = y - dY;
-			    maxY = y + dY;
-			    
-			    drawFractal();
+			    // Zoom in
+			    zoomAt(x,y,zoomFactor);
 			});
 			
+			// Draw fractal
 			drawFractal();
 		});
 		</script>
