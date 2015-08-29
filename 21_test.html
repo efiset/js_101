@@ -1,0 +1,162 @@
+<html>
+	<head>
+		<title>Canvas</title>
+		
+		<style type="text/css">
+			.canvas {
+				margin: 0;
+				padding: 0;
+				border: none;
+			}
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript">
+		
+		/*
+			The Mandelbrot set is the set of complex numbers 'c' for which the sequence ( c, c^2 + c, 
+			(c^2+c)^2 + c, ((c^2+c)^2+c)^2 + c, ...) does not approach infinity.
+			
+			z(n+1) = z(n)^2 + c
+		 */
+		
+		var canvasWidth = 1000;
+		var canvasHeight = 1000;
+		var minX = -2;
+		var maxX = 2;
+		var minY = -2;
+		var maxY = 2;
+		var divergeMaxCount = 100;
+		
+		function complexAdd(a,b){
+			var c = [];
+			c[0] = a[0] + b[0];
+			c[1] = a[1] + b[1];
+			return c;
+		};
+		
+		function complexMult(a,b){
+			var c = [];
+			c[0] = (a[0] * b[0]) - (a[1] * b[1]);
+			c[1] = (a[0] * b[1]) + (a[1] * b[0]);
+			return c;
+		};
+		
+		var colourCache = {};
+		function getColour(i){
+			var c = colourCache[i];
+			if( !c ){
+				var comp = Math.floor((i / divergeMaxCount) * 255);
+				c = "rgba("+comp+","+comp+","+255+","+255+")";
+				colourCache[i] = c;
+			};
+			return c;
+		};
+		function getColour2(i){
+			var c = colourCache[i];
+			if( !c ){
+				var fac = i * 3 / divergeMaxCount; // 0 to 3
+				var r = Math.min(Math.floor(fac * 255),255);
+				var g = Math.min(Math.floor((fac-1) * 255),255);
+				var b = Math.min(Math.floor((fac-2) * 255),255);
+				c = "rgba("+r+","+g+","+b+","+255+")";
+				colourCache[i] = c;
+			};
+			return c;
+		};
+		
+		function mandelbrot(c){
+			var z = [0,0];
+			
+			for(var i=0;i<divergeMaxCount;++i){
+				z = complexAdd(complexMult(z,z),c);
+				
+				// check if it diverges
+				if( z[0] < -4 || z[0] > 4 || z[1] < -4 || z[1] > 4 ){
+					// Return number of iterations to diverge
+					return i;
+				};
+			};
+			
+			return i;
+		};
+		
+		var juliaC = [-0.7,0.27];
+		function julia(z){
+			for(var i=0;i<divergeMaxCount;++i){
+				z = complexAdd(complexMult(z,z),juliaC);
+				
+				// check if it diverges
+				if( z[0] < -4 || z[0] > 4 || z[1] < -4 || z[1] > 4 ){
+					// Return number of iterations to diverge
+					return i;
+				};
+			};
+			
+			return i;
+		};
+		
+		function drawFractal(){
+			var $canvas = $('#canvas');
+			
+			var ctx = $canvas[0].getContext('2d');
+			
+			var incX = (maxX - minX) / canvasWidth;
+			var incY = (maxY - minY) / canvasHeight;
+			
+			var effY = minY;
+			for(var y=0; y<canvasHeight; ++y){
+				var effX = minX;
+				for(var x=0; x<canvasWidth; ++x){
+					var i = mandelbrot([effX,effY]);
+					//var i = julia([effX,effY]);
+					
+					ctx.fillStyle = getColour2(i);
+					ctx.fillRect( x, y, 1, 1 );
+					
+					effX += incX;
+				};
+				
+				effY += incY;
+			};
+		};
+			
+		$(document).ready(function(){
+			var $canvas = $('<canvas>')
+				.attr('id','canvas')
+				.addClass('canvas')
+				.attr('height',canvasHeight)
+				.attr('width',canvasWidth)
+				.appendTo($('body'))
+				;
+			
+			$canvas.click(function(evt){
+				var rect = canvas.getBoundingClientRect();
+			    var pos = {
+			        x: evt.clientX - rect.left,
+			        y: evt.clientY - rect.top
+			    };
+			    
+			    var incX = (maxX - minX) / canvasWidth;
+			    var incY = (maxY - minY) / canvasHeight;
+			    
+			    var x = (pos.x * incX) + minX;
+			    var y = (pos.y * incY) + minY;
+
+			    var dX = (maxX - minX) / 4;
+			    var dY = (maxY - minY) / 4;
+			    
+			    minX = x - dX;
+			    maxX = x + dX;
+			    minY = y - dY;
+			    maxY = y + dY;
+			    
+			    drawFractal();
+			});
+			
+			drawFractal();
+		});
+		</script>
+	</body>
+</html>

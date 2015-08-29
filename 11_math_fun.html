@@ -1,0 +1,30 @@
+<html>
+	<head>
+		<title>Math Fun</title>
+	</head>
+	<body>
+		<div id="output" style="white-space:pre;"></div>
+		<script type="text/javascript">
+			function print(str){
+				var out = document.getElementById('output');
+				var text = out.textContent;
+				text += str;
+				out.textContent = text;
+			};
+			
+			var t_init = 0.1;
+			
+			function f(t0, r){
+				var t1 = r * t0 * (1 - t0);
+				return t1;
+			};
+
+			var r = 2.5;
+			var t = t_init;
+			for(var i=0; i<100; ++i){
+				print(''+i+':'+t+'\n');
+				t = f(t,r);
+			};
+		</script>
+	</body>
+</html>
