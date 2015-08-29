@@ -29,6 +29,15 @@
 		var maxY = 2;
 		var divergeMaxCount = 100;
 		
+		/*
+			In this program, we need to perform computations on
+			complex numbers. For this purpose, we use an array of
+			two numbers, where the first number represents the real
+			portion and the second one, the imaginary portion, of
+			the complex number.
+			
+			Only additions and multiplications are needed.
+		 */
 		function complexAdd(a,b){
 			var c = [];
 			c[0] = a[0] + b[0];
@@ -43,6 +52,12 @@
 			return c;
 		};
 		
+		/*
+			The following functions convert an integer to a colour
+			code. The given integer represent the number of iterations
+			required to detect that a point is diverging. This number
+			ranges from 0 to divergeMaxCount
+		 */
 		var colourCache = {};
 		function getColour(i){
 			var c = colourCache[i];
@@ -66,6 +81,13 @@
 			return c;
 		};
 		
+		/*
+			The next functions are testing how many iterations it takes to
+			diverge. The number returned ranges between 0 and divergeMaxCount
+		 */
+		 
+		// Mandelbrot is z(n+1) = z(n)^2 + c
+		// The input is c
 		function mandelbrot(c){
 			var z = [0,0];
 			
@@ -82,6 +104,8 @@
 			return i;
 		};
 		
+		// Julia is z(n+1) = z(n)^2 + c
+		// The input is z(0). c is constant
 		var juliaC = [-0.7,0.27];
 		function julia(z){
 			for(var i=0;i<divergeMaxCount;++i){
@@ -97,6 +121,11 @@
 			return i;
 		};
 		
+		/*
+			This function draws the fractal by testing each pixel and
+			colouring it according to how fast it diverges according to a 
+			function.
+		 */
 		function drawFractal(){
 			var $canvas = $('#canvas');
 			
@@ -109,10 +138,14 @@
 			for(var y=0; y<canvasHeight; ++y){
 				var effX = minX;
 				for(var x=0; x<canvasWidth; ++x){
+					// Here, choose a function
 					var i = mandelbrot([effX,effY]);
 					//var i = julia([effX,effY]);
 					
+					// Here, choose a colour scheme
+					//ctx.fillStyle = getColour(i);
 					ctx.fillStyle = getColour2(i);
+					
 					ctx.fillRect( x, y, 1, 1 );
 					
 					effX += incX;
