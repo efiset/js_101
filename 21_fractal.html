@@ -53,6 +53,41 @@
 			return c;
 		};
 		
+		/* 
+			This function transforms a HSV colour into
+			a RGB colour.
+			http://stackoverflow.com/questions/17242144/javascript-convert-hsb-hsv-color-to-rgb-accurately
+			https://en.wikipedia.org/wiki/HSL_and_HSV
+			
+			parameters h, s and v should be in the 0 to 1 range
+		*/
+		function HSVtoRGB(h, s, v) {
+			var r, g, b;
+			if (arguments.length === 1) {
+				s = h.s;
+				v = h.v;
+				h = h.h;
+			};
+			var i = Math.floor(h * 6);
+			var f = h * 6 - i;
+			var p = v * (1 - s);
+			var q = v * (1 - f * s);
+			var t = v * (1 - (1 - f) * s);
+			switch (i % 6) {
+				case 0: r = v, g = t, b = p; break;
+				case 1: r = q, g = v, b = p; break;
+				case 2: r = p, g = v, b = t; break;
+				case 3: r = p, g = q, b = v; break;
+				case 4: r = t, g = p, b = v; break;
+				case 5: r = v, g = p, b = q; break;
+			}
+			return {
+				r: Math.round(r * 255),
+				g: Math.round(g * 255),
+				b: Math.round(b * 255)
+			};
+		};
+		
 		/*
 			The following functions convert an integer to a colour
 			code. The given integer represent the number of iterations
@@ -77,6 +112,24 @@
 				var g = Math.min(Math.floor((fac-1) * 255),255);
 				var b = Math.min(Math.floor((fac-2) * 255),255);
 				c = "rgba("+r+","+g+","+b+","+255+")";
+				colourCache[i] = c;
+			};
+			return c;
+		};
+		function getColour3(i){
+			// In this scheme, we use the value returned by the function as
+			// the hue component of the colour. Since the hue ranges from 0 to
+			// 1, 
+			var c = colourCache[i];
+			if( !c ){
+				if( i === divergeMaxCount ){
+					c = "rgba(0,0,0,255)"; // black
+				} else {
+					var h = i / divergeMaxCount;
+					var rgb = HSVtoRGB(h, 1, 1);
+					c = "rgba("+rgb.r+","+rgb.g+","+rgb.b+","+255+")";
+				};
+
 				colourCache[i] = c;
 			};
 			return c;
@@ -145,7 +198,7 @@
 					
 					// Here, choose a colour scheme
 					//ctx.fillStyle = getColour(i);
-					ctx.fillStyle = getColour2(i);
+					ctx.fillStyle = getColour3(i);
 					
 					ctx.fillRect( pixelX, pixelY, 1, 1 );
 					
